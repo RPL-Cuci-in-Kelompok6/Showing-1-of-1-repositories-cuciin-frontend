@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,17 +43,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun RegisterPage() {
+fun RegisterPage(NavController: NavHostController) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(25.dp),
+                .padding(25.dp)
+                .clickable {  },
 //            verticalArrangement = Arrangement.Center,
 //            horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -124,7 +127,7 @@ fun RegisterPage() {
 
             // Tombol Rgister
             Button(
-                onClick = { },
+                onClick = { NavController.navigate("Login") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp),
@@ -259,7 +262,7 @@ fun RegisterPage() {
                             color = Color(0xFFF83758),
                             textDecoration = TextDecoration.Underline,
                         ),
-                        onClick = {}
+                        onClick = {NavController.navigate("Login")}
                     )
                 }
             }

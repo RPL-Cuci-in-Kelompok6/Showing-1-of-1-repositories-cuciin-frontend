@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,9 +16,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Person
@@ -51,19 +54,28 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.cuciin_temp.ui.theme.Cuciin_tempTheme
+import com.example.cuciin_temp.ui.theme.fontFamily
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun DashboardPage() {
+fun DashboardPage(NavController: NavHostController) {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(25.dp,15.dp),
+                .fillMaxWidth()
+                .padding(25.dp, 15.dp),
 //            verticalArrangement = Arrangement.Center,
 //            horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -83,7 +95,7 @@ fun DashboardPage() {
                             text = "Izzud",
                             style = TextStyle(
                                 fontSize = 24.sp,
-//                    fontFamily = FontFamily(Font(R.font.fjalla one)),
+//                              fontFamily = fontFamily
                                 fontWeight = FontWeight(400),
                                 color = Color(0xFF000000),
                             )
@@ -100,6 +112,7 @@ fun DashboardPage() {
                             .width(57.dp)
                             .clip(CircleShape)
                             .align(Alignment.CenterEnd)
+                            .clickable { NavController.navigate("Profile") }
                     )
                 }
             }
@@ -259,6 +272,7 @@ fun DashboardPage() {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .clickable { NavController.navigate("Layanan") }
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.toko1),
@@ -397,16 +411,103 @@ fun DashboardPage() {
                     }
                 }
             }
-            
-            Text(text = "halo")
+
+        }
+        Row(modifier = Modifier
+            .padding(top = 775.dp)
+            .shadow(
+                elevation = 30.dp,
+                spotColor = Color(0x40435D6B),
+                ambientColor = Color(0x40435D6B)
+            )
+            .shadow(
+                elevation = 30.dp,
+                spotColor = Color(0x40435D6B),
+                ambientColor = Color(0x40435D6B)
+            )
+            .fillMaxWidth()
+            .height(75.dp)
+            .background(color = Color(0xFFCAE4E9), shape = RoundedCornerShape(size = 10.dp)),
+            horizontalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column {
+                Image( modifier = Modifier
+                    .width(40.dp)
+                    .height(14.49874.dp)
+                    .clickable { NavController.navigate("Dashboard") },
+                    painter = painterResource(id = R.drawable.ic_round_dashboard),
+                    contentDescription = "image description",
+                    contentScale = ContentScale.None
+                )
+                Text(
+                    text = "Home",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        lineHeight = 20.sp,
+                        fontFamily = fontFamily,
+                        fontWeight = FontWeight(500),
+                        color = Color(0xFF667C8A),
+
+                        textAlign = TextAlign.Center,
+                    )
+                )
+            }
+            Column {
+                Image( modifier = Modifier
+                    .width(40.dp)
+                    .height(17.49874.dp)
+                    .clickable { NavController.navigate("Pesan") },
+                    painter = painterResource(id = R.drawable.bytesize_heart),
+                    contentDescription = "image description",
+                    contentScale = ContentScale.None
+                )
+                Text(
+                    text = "Pesan",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        lineHeight = 20.sp,
+                        fontFamily = fontFamily,
+                        fontWeight = FontWeight(500),
+                        color = Color(0xFF667C8A),
+
+                        textAlign = TextAlign.Center,
+                    )
+                )
+            }
+            Column {
+                Image( modifier = Modifier
+                    .width(40.dp)
+                    .height(14.49874.dp)
+                    .clickable { NavController.navigate("History") },
+                    painter = painterResource(id = R.drawable.vector),
+                    contentDescription = "image description",
+                    contentScale = ContentScale.None
+                )
+                Text(
+                    text = "History",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        lineHeight = 20.sp,
+                        fontFamily = fontFamily,
+                        fontWeight = FontWeight(500),
+                        color = Color(0xFF667C8A),
+
+                        textAlign = TextAlign.Center,
+                    )
+                )
+            }
         }
     }
 }
 
+
+
 @Preview(showBackground = true)
 @Composable
 fun preview() {
-    Surface {
-        HistoryPage()
+    val navController = rememberNavController()
+    Cuciin_tempTheme {
+        DashboardPage(NavController = navController)
     }
 }

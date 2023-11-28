@@ -42,11 +42,12 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.TextFieldDefaults
+import androidx.navigation.NavHostController
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun LoginPage() {
+fun LoginPage(NavController: NavHostController) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -117,7 +118,7 @@ fun LoginPage() {
 
             // Tombol Login
             Button(
-                onClick = { },
+                onClick = { NavController.navigate("Dashboard") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp),
@@ -252,7 +253,7 @@ fun LoginPage() {
                             color = Color(0xFFF83758),
                             textDecoration = TextDecoration.Underline,
                         ),
-                        onClick = {}
+                        onClick = {NavController.navigate("Register")}
                     )
                 }
             }

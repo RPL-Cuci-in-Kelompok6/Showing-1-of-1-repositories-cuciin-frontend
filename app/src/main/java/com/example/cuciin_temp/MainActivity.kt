@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import com.example.cuciin_temp.Navigation.navigation
 import com.example.cuciin_temp.ui.theme.Cuciin_tempTheme
 
 class MainActivity : ComponentActivity() {
@@ -43,7 +44,7 @@ class MainActivity : ComponentActivity() {
                 color = Color(0xFFEAFCFF)
 
             ) {
-                DashboardPage()
+                navigation()
             }
         }
     }
