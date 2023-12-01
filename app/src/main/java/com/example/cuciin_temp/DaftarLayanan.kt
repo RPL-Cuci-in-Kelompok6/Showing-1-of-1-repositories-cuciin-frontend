@@ -25,11 +25,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -89,7 +93,7 @@ fun DaftarLayanan(NavController: NavHostController) {
         Text(modifier = Modifier
             .fillMaxWidth()
             .height(33.dp),
-            text = "FUZZY LAUNDRY",
+            text = "LAUNDRY BUDDY",
             style = TextStyle(
                 fontSize = 22.sp,
                 fontFamily = fontFamily,
@@ -154,16 +158,25 @@ fun MyCardList() {
 fun MyCard(
     number: String,
     kilos: String
+
 ) {
+    var isBackgroundChanged by remember { mutableStateOf(false) }
+    val backgroundColor = if (isBackgroundChanged) {
+        Color.Cyan // Change this to the color you want when clicked
+    } else {
+        Color.LightGray // Default color
+    }
     Card(modifier = Modifier
         .width(107.13878.dp)
         .height(112.dp)
-        .clickable { }
+        .clickable { isBackgroundChanged = !isBackgroundChanged }
         .background(
-            color = Color(0xFFF9F9F9),
+            color = Color(0xFFFFFFFF),
             shape = RoundedCornerShape(size = 5.08002.dp)
-        )
-    ) {
+        ),
+            colors = CardDefaults.cardColors(
+            containerColor = backgroundColor,)
+        ) {
         Image( modifier = Modifier
             .padding(start = 38.dp, top = 10.dp)
             .width(29.03123.dp)

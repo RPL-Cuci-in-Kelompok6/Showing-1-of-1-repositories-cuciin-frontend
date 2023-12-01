@@ -66,6 +66,9 @@ import com.example.cuciin_temp.ui.theme.fontFamily
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun DashboardPage(NavController: NavHostController) {
+    var name by remember { mutableStateOf("Izzud") }
+    var password1 by remember { mutableStateOf("") }
+    var password2 by remember { mutableStateOf("") }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -92,7 +95,7 @@ fun DashboardPage(NavController: NavHostController) {
                             )
                         )
                         Text(
-                            text = "Izzud",
+                            text = name,
                             style = TextStyle(
                                 fontSize = 24.sp,
 //                              fontFamily = fontFamily
@@ -158,6 +161,7 @@ fun DashboardPage(NavController: NavHostController) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(5.dp, 5.dp)
+                                .clickable { NavController.navigate("Status") }
                         ) {
                             Spacer(modifier = Modifier.width(10.dp))
                             Image(

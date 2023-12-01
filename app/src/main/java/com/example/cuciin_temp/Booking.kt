@@ -19,6 +19,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -141,7 +145,7 @@ fun Booking(NavController: NavHostController) {
             .width(306.dp)
             .height(50.dp)
             .background(color = Color(0xFF3D4EB0), shape = RoundedCornerShape(size = 5.08002.dp))
-            .clickable { NavController.navigate("Dashboard") },
+            .clickable { NavController.navigate("Status") },
 
             ) {
             Text(modifier = Modifier
@@ -164,12 +168,19 @@ fun Booking(NavController: NavHostController) {
 fun MyPay(
     payment: String,
 ){
+    var isBackgroundChanged by remember { mutableStateOf(false) }
+    val backgroundColor = if (isBackgroundChanged) {
+        Color(0xFF3D4EB0) // Change this to the color you want when selected
+    } else {
+        Color(0xFF47B7DD) // Default color
+    }
     Spacer(modifier = Modifier.size(30.dp))
     Column(modifier = Modifier
         .width(365.dp)
         .height(54.dp)
         .padding(start = 30.dp)
-        .background(color = Color(0xFF47B7DD), shape = RoundedCornerShape(size = 8.dp)),
+        .background(color = backgroundColor, shape = RoundedCornerShape(size = 8.dp))
+        .clickable { isBackgroundChanged = !isBackgroundChanged },
     ) {
         Row(modifier = Modifier
             .fillMaxWidth()

@@ -12,6 +12,7 @@ import com.example.cuciin_temp.LoginPage
 import com.example.cuciin_temp.MitraPage
 import com.example.cuciin_temp.Profile
 import com.example.cuciin_temp.RegisterPage
+import com.example.cuciin_temp.Status
 import com.example.cuciin_temp.TypeCucian
 
 
@@ -45,6 +46,9 @@ fun navigation(){
         }
         composable(route = "Profile"){
             Profile(NavController)
+        }
+        composable(route = "Status"){
+            Status(NavController)
         }
 
 
