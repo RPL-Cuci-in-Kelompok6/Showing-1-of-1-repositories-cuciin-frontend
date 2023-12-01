@@ -19,7 +19,7 @@ import com.example.cuciin_temp.TypeCucian
 @Composable
 fun navigation(){
     val NavController = rememberNavController()
-    NavHost(navController = NavController, startDestination = "Dashboard"){
+    NavHost(navController = NavController, startDestination = "Login"){
         composable(route = "Login"){
             LoginPage(NavController)
         }

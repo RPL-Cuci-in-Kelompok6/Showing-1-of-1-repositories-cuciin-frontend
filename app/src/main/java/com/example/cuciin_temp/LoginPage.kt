@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.TextFieldDefaults
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 
 
@@ -118,14 +119,14 @@ fun LoginPage(NavController: NavHostController) {
 
             // Tombol Login
             Button(
-                onClick = { NavController.navigate("Dashboard") },
+                onClick = { LoginValidate(username, password, NavController) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp),
                 shape = RoundedCornerShape(4.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF3D4EB0), // Change the background color here
-                    contentColor = Color.White // Change the text color here
+                    containerColor = Color(0xFF3D4EB0),
+                    contentColor = Color.White
                 )
             ) {
                 Text(text = "Login")
@@ -258,5 +259,20 @@ fun LoginPage(NavController: NavHostController) {
                 }
             }
         }
+    }
+
+
+}
+
+fun LoginValidate(username:String, password:String, NavController: NavHostController) {
+    val dummyUsername = "izzud"
+    val dummyPassword = "1234"
+
+    if (username == dummyUsername && password == dummyPassword) {
+        // Successful login, navigate to Dashboard
+        NavController.navigate("Dashboard")
+    } else {
+        // Display a message or handle unsuccessful login
+        
     }
 }
