@@ -61,6 +61,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.cuciin_temp.ui.theme.Cuciin_tempTheme
 import com.example.cuciin_temp.ui.theme.fontFamily
+import com.example.cuciin_temp.viewModel.MitraViewModel
+import androidx.activity.viewModels
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -417,6 +420,9 @@ fun DashboardPage(NavController: NavHostController) {
             }
 
         }
+
+
+
         Row(modifier = Modifier
             .padding(top = 775.dp)
             .shadow(
