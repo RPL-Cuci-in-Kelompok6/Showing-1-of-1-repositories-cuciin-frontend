@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,7 +35,7 @@ import com.example.cuciin_temp.viewModel.MainViewModel
 
 class MainActivity : ComponentActivity() {
 
-//    val mitraViewModel by viewModels<MitraViewModel>()
+    val mainViewModel by viewModels<MainViewModel>()
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

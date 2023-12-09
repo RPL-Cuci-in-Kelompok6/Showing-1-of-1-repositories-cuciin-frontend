@@ -59,7 +59,7 @@ fun Status(NavController: NavHostController) {
                 .padding(start = 20.dp)
                 .width(20.dp)
                 .height(14.49874.dp)
-                .clickable { NavController.navigate("Type") },
+                .clickable { NavController.navigate("Dashboard") },
                 painter = painterResource(id = R.drawable.panah),
                 contentDescription = "image description",
                 contentScale = ContentScale.None

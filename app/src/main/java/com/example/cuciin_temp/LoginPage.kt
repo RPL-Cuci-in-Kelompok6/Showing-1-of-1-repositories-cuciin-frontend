@@ -54,6 +54,7 @@ import com.example.cuciin_temp.model.LoginRequest
 import com.example.cuciin_temp.model.LoginResponse
 import com.example.cuciin_temp.model.RegisterResponse
 import com.example.cuciin_temp.network.RetrofitAPI
+import com.example.cuciin_temp.viewModel.MainViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -63,7 +64,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun LoginPage(NavController: NavHostController) {
+fun LoginPage(NavController: NavHostController, mainViewModel: MainViewModel) {
     val ctx = LocalContext.current
     Box(
         modifier = Modifier.fillMaxSize()
@@ -135,7 +136,7 @@ fun LoginPage(NavController: NavHostController) {
 
             // Tombol Login
             Button(
-                onClick = { LoginValidate(ctx, email, password, NavController) },
+                onClick = { LoginValidate(ctx, email, password, NavController, mainViewModel) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp),
@@ -284,7 +285,8 @@ private fun LoginValidate(
     ctx: Context,
     email: String,
     password: String,
-    NavController: NavHostController
+    NavController: NavHostController,
+    mainViewModel: MainViewModel
 
 ) {
 
@@ -318,7 +320,11 @@ private fun LoginValidate(
                 "Response Code : " + response.code() + "\n" + model?.message
             Toast.makeText(ctx, resp, Toast.LENGTH_SHORT).show()
             val status: Boolean? = model?.success
-            if (status==true) NavController.navigate("Dashboard")
+            if (status==true) {
+                mainViewModel.customerEmail = email
+                mainViewModel.customerId = model.id
+                NavController.navigate("Dashboard")
+            }
 
         }
 

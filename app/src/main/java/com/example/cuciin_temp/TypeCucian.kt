@@ -16,16 +16,22 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,12 +50,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.cuciin_temp.model.Layanan
 import com.example.cuciin_temp.ui.theme.Cuciin_tempTheme
 import com.example.cuciin_temp.ui.theme.fontFamily
+import com.example.cuciin_temp.viewModel.MainViewModel
 
 
 @Composable
-fun TypeCucian(NavController: NavHostController) {
+fun TypeCucian(NavController: NavHostController, mainViewModel: MainViewModel) {
     Column(modifier = Modifier
         .fillMaxSize()
         .background(color = Color(0xFFEAFCFF))
@@ -128,7 +136,9 @@ fun TypeCucian(NavController: NavHostController) {
                 )
             )
         }
+
         Spacer(modifier = Modifier.size(40.dp))
+
         Text(modifier = Modifier
             .padding(start = 30.dp),
             text = "Choose wash type",
@@ -140,12 +150,18 @@ fun TypeCucian(NavController: NavHostController) {
 
                 )
         )
+
         Spacer(modifier = Modifier.size(10.dp))
+
         Column (modifier = Modifier
             .width(400.dp)
             .height(450.dp)
         ){
-            Columns()
+            Columns(mainViewModel)
+        }
+
+        val response = remember {
+            mutableStateOf(Layanan(0,0, emptyList(),""))
         }
 
         Column(modifier = Modifier
@@ -172,83 +188,174 @@ fun TypeCucian(NavController: NavHostController) {
     }
 }
 
+//@Composable
+//fun MyChoice(
+//    type: String,
+//    price: String,
+//){
+//    var isBackgroundChanged by remember { mutableStateOf(false) }
+//    val backgroundColor = if (isBackgroundChanged) {
+//        Color(0xFF3D4EB0) // Change this to the color you want when selected
+//    } else {
+//        Color(0xFF47B7DD) // Default color
+//    }
+//    Spacer(modifier = Modifier.size(30.dp))
+//    Column(modifier = Modifier
+//        .width(365.dp)
+//        .height(54.dp)
+//        .padding(start = 30.dp)
+//        .background(color = backgroundColor, shape = RoundedCornerShape(size = 8.dp))
+//        .clickable { isBackgroundChanged = !isBackgroundChanged },
+//    ) {
+//        Row(modifier = Modifier
+//            .fillMaxWidth()
+//            .fillMaxWidth(),
+//            horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.Start),
+//            verticalAlignment = Alignment.CenterVertically,
+//        ) {
+//            Image( modifier = Modifier
+//                .padding(top = 10.dp, start = 20.dp)
+//                .width(20.dp)
+//                .height(14.49874.dp),
+//                painter = painterResource(id = R.drawable.setrika),
+//                contentDescription = "image description",
+//                contentScale = ContentScale.None,
+//            )
+//            Column(modifier = Modifier.padding(top = 5.dp)) {
+//                Text(
+//                    text = type,
+//                    style = TextStyle(
+//                        fontSize = 16.sp,
+//                        fontFamily = fontFamily,
+//                        fontWeight = FontWeight(500),
+//                        color = Color(0xFF000000),
+//
+//                        )
+//                )
+//                Text(
+//                    text = price,
+//                    style = TextStyle(
+//                        fontSize = 16.sp,
+//                        fontFamily = fontFamily,
+//                        fontWeight = FontWeight(500),
+//                        color = Color(0xFF000000),
+//
+//                        )
+//                )
+//            }
+//        }
+//    }
+//}
+//
+//val types = listOf("Cuci Biasa", "Cuci Kering", "Cuci Setrika")
+//val prices = listOf("Rp.20000", "Rp.25000", "Rp.30000")
+//
+//@Composable
+//fun Columns() {
+//    Column {
+//        for (i in types.indices) {
+//            MyChoice(types[i], prices[i])
+//            Spacer(modifier = Modifier.height(16.dp)) // Add spacing between columns
+//        }
+//    }
+//}
+
 @Composable
 fun MyChoice(
-    type: String,
-    price: String,
-){
-    var isBackgroundChanged by remember { mutableStateOf(false) }
-    val backgroundColor = if (isBackgroundChanged) {
-        Color(0xFF3D4EB0) // Change this to the color you want when selected
-    } else {
-        Color(0xFF47B7DD) // Default color
-    }
-    Spacer(modifier = Modifier.size(30.dp))
-    Column(modifier = Modifier
-        .width(365.dp)
-        .height(54.dp)
-        .padding(start = 30.dp)
-        .background(color = backgroundColor, shape = RoundedCornerShape(size = 8.dp))
-        .clickable { isBackgroundChanged = !isBackgroundChanged },
-    ) {
-        Row(modifier = Modifier
+    type: Layanan,
+    isSelected: Boolean,
+    onSelected: (Layanan) -> Unit,
+    mainViewModel: MainViewModel
+) {
+    Surface(
+        modifier = Modifier
             .fillMaxWidth()
-            .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.Start),
-            verticalAlignment = Alignment.CenterVertically,
+            .padding(20.dp)
+            .clickable { onSelected(type) },
+        shape = RoundedCornerShape(8.dp),
+        color = if (isSelected) Color(0xFF8F9FFF) else Color(0xFF47B7DD)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Image( modifier = Modifier
-                .padding(top = 10.dp, start = 20.dp)
-                .width(20.dp)
-                .height(14.49874.dp),
+            RadioButton(
+                selected = isSelected,
+                onClick = { onSelected(type) },
+                colors = RadioButtonDefaults.colors(
+                    selectedColor = MaterialTheme.colorScheme.secondary,
+                    unselectedColor = MaterialTheme.colorScheme.primary
+                )
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Image(
+                modifier = Modifier
+                    .width(20.dp)
+                    .height(14.49874.dp),
                 painter = painterResource(id = R.drawable.setrika),
                 contentDescription = "image description",
-                contentScale = ContentScale.None,
+                contentScale = ContentScale.None
             )
-            Column(modifier = Modifier.padding(top = 5.dp)) {
+            Spacer(modifier = Modifier.width(16.dp))
+            Column {
                 Text(
-                    text = type,
+                    text = type.nama,
                     style = TextStyle(
                         fontSize = 16.sp,
-                        fontFamily = fontFamily,
                         fontWeight = FontWeight(500),
                         color = Color(0xFF000000),
-
-                        )
+                    )
                 )
                 Text(
-                    text = price,
+                    text = type.harga.toString(),
                     style = TextStyle(
                         fontSize = 16.sp,
-                        fontFamily = fontFamily,
                         fontWeight = FontWeight(500),
                         color = Color(0xFF000000),
-
-                        )
+                    )
                 )
             }
         }
     }
 }
 
-val types = listOf("Cuci Biasa", "Cuci Kering", "Cuci Setrika")
-val prices = listOf("Rp.20000", "Rp.25000", "Rp.30000")
+
 
 @Composable
-fun Columns() {
-    Column {
-        for (i in types.indices) {
-            MyChoice(types[i], prices[i])
-            Spacer(modifier = Modifier.height(16.dp)) // Add spacing between columns
+fun Columns(mainViewModel: MainViewModel) {
+    val types = mainViewModel.selectedMitra.layanan
+    var selectedType by remember { mutableStateOf<Layanan?>(null) }
+    if (selectedType != null){
+        mainViewModel.selectedLayanan = selectedType!!
+    }
+
+    if(types != null){
+        LazyColumn {
+            items(types) { type ->
+                MyChoice(
+                    type = type,
+                    isSelected = type == selectedType,
+                    onSelected = { selectedType = it },
+                    mainViewModel
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+            }
         }
+    } else{
+        Text(
+            text = "Maaf, Tidak ada layanan yang tersedia",
+            style = TextStyle(
+                fontSize = 16.sp,
+                fontWeight = FontWeight(500),
+                color = Color(0xFF000000),
+            )
+        )
     }
+
+
 }
 
-@Preview(showBackground = true)
-@Composable
-fun TypePreview() {
-    val navController = rememberNavController()
-    Cuciin_tempTheme {
-        TypeCucian(NavController = navController)
-    }
-}
+
+

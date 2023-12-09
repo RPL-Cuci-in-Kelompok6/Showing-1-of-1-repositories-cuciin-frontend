@@ -22,25 +22,25 @@ fun navigation(mainViewModel : MainViewModel){
     val NavController = rememberNavController()
     NavHost(navController = NavController, startDestination = "Login"){
         composable(route = "Login"){
-            LoginPage(NavController)
+            LoginPage(NavController, mainViewModel)
         }
         composable(route = "Register"){
             RegisterPage(NavController)
         }
         composable(route = "Dashboard"){
-            DashboardPage(NavController)
+            DashboardPage(NavController, mainViewModel)
         }
         composable(route = "Pesan"){
-            MitraPage(NavController)
+            MitraPage(NavController, mainViewModel)
         }
         composable(route = "History"){
             HistoryPage(NavController)
         }
         composable(route = "Layanan"){
-            DaftarLayanan(NavController)
+            DaftarLayanan(NavController, mainViewModel)
         }
         composable(route = "Type"){
-            TypeCucian(NavController)
+            TypeCucian(NavController, mainViewModel)
         }
         composable(route = "Booking"){
             Booking(NavController)

@@ -1,6 +1,6 @@
 package com.example.cuciin_temp.model
 
-data class Services(
-    val data: DataX,
+data class GetOrderResponse(
+    val `data`: DataXXX,
     val success: Boolean
 )

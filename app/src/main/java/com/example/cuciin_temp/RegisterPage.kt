@@ -194,7 +194,7 @@ fun RegisterPage(NavController: NavHostController) {
             // Tombol Rgister
             Button(
                 onClick = { /*NavController.navigate("Login")*/ postDataUsingRetrofit(
-                    ctx,Name, Mail, Password, Telp
+                    ctx,Name, Mail, Password, Telp, NavController
                 ) },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -345,6 +345,7 @@ private fun postDataUsingRetrofit(
     email: MutableState<TextFieldValue>,
     password: MutableState<TextFieldValue>,
     telepon: MutableState<TextFieldValue>,
+    NavController: NavHostController
 ) {
 
     var url = "https://cuciin.anandadf.my.id/"
@@ -376,7 +377,8 @@ private fun postDataUsingRetrofit(
             val resp =
                 "Response Code : " + response.code() + "\n" + model?.message
             Toast.makeText(ctx, resp, Toast.LENGTH_SHORT).show()
-                        // below line we are setting our string to our response.
+            val status: Boolean? = model?.success
+            if (status==true) NavController.navigate("Login")
         }
 
         override fun onFailure(call: Call<RegisterResponse?>?, t: Throwable) {

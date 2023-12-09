@@ -37,15 +37,15 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.cuciin_temp.model.DataModel
 import com.example.cuciin_temp.model.MitraX
-import com.example.cuciin_temp.model.Services
+import com.example.cuciin_temp.model.ServicesRequest
+import com.example.cuciin_temp.model.ServicesResponses
 import com.example.cuciin_temp.network.RetrofitAPI
 import com.example.cuciin_temp.viewModel.MainViewModel
 import retrofit2.Call
@@ -56,8 +56,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun MitraPage(NavController: NavHostController) {
-    val mainViewModel = viewModel<MainViewModel>()
+fun MitraPage(NavController: NavHostController, mainViewModel: MainViewModel) {
 //    val vm = viewModel<MainViewModel>()
     Scaffold(
         topBar = {
@@ -94,7 +93,7 @@ fun MitraPage(NavController: NavHostController) {
             LazyColumn {
 
                 items(mainViewModel.MitraXListResponse) { item ->
-                    MitraItem(item, NavController)
+                    MitraItem(item, NavController, mainViewModel)
                 }
             }
             mainViewModel.getMitraX()
@@ -108,7 +107,7 @@ fun MitraPage(NavController: NavHostController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MitraItem(mitraX : MitraX, NavController: NavHostController) {
+fun MitraItem(mitraX : MitraX, NavController: NavHostController, mainViewModel: MainViewModel) {
     val ctx = LocalContext.current
     Card(
         elevation = CardDefaults.cardElevation(
@@ -117,8 +116,8 @@ fun MitraItem(mitraX : MitraX, NavController: NavHostController) {
         modifier = Modifier
             .fillMaxWidth(),
         onClick = {
-            getServicesById(ctx, mitraX.id)
-//            NavController.navigate("Type")
+            getServicesById(ctx, mitraX.id, mainViewModel, NavController)
+
         }
 
     ) {
@@ -201,6 +200,8 @@ fun MitraItem(mitraX : MitraX, NavController: NavHostController) {
 private fun getServicesById(
     ctx: Context,
     id: Int,
+    mainViewModel: MainViewModel,
+    NavController: NavHostController
 ) {
     try {
         var url = "https://cuciin.anandadf.my.id/"
@@ -216,17 +217,17 @@ private fun getServicesById(
         // below the line is to create an instance for our retrofit api class.
         val retrofitAPI = retrofit.create(RetrofitAPI::class.java)
         // passing data from our text fields to our model class.
-
+        val servicesRequest = ServicesRequest(id)
         // calling a method to create an update and passing our model class.
-        val call: Call<Services> = retrofitAPI.getServices(2)
+        val call: Call<ServicesResponses?>? = retrofitAPI.getServices(servicesRequest)
         // on below line we are executing our method.
-        call!!.enqueue(object : Callback<Services?> {
-            override fun onResponse(call: Call<Services?>, response: Response<Services?>) {
+        call!!.enqueue(object : Callback<ServicesResponses?> {
+            override fun onResponse(call: Call<ServicesResponses?>?, response: Response<ServicesResponses?>) {
                 // this method is called when we get response from our api.
 
                 // we are getting a response from our body and
                 // passing it to our model class.
-                val model: Services? = response.body()
+                val model: ServicesResponses? = response.body()
                 // on below line we are getting our data from model class
                 // and adding it to our string.
                 val resp =
@@ -234,10 +235,16 @@ private fun getServicesById(
                             "Success : " + model?.success
 
                 Toast.makeText(ctx, resp, Toast.LENGTH_SHORT).show()
-                // below line we are setting our string to our response.
+                val status: Boolean? = model?.success
+                if (status==true) {
+                    mainViewModel.selectedMitra = model.data
+                    NavController.navigate("Type")
+                }
+
+
             }
 
-            override fun onFailure(call: Call<Services?>, t: Throwable) {
+            override fun onFailure(call: Call<ServicesResponses?>, t: Throwable) {
                 // we get error response from API.
 //            result.value = "Error found is : " + t.message
             }

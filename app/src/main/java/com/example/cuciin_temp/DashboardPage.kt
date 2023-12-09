@@ -1,5 +1,7 @@
 package com.example.cuciin_temp
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,6 +16,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -42,23 +46,28 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.example.cuciin_temp.ui.theme.Cuciin_tempTheme
+import com.example.cuciin_temp.model.GetOrderRequest
+import com.example.cuciin_temp.model.GetOrderResponse
+import com.example.cuciin_temp.model.ServicesResponses
+import com.example.cuciin_temp.network.RetrofitAPI
 import com.example.cuciin_temp.ui.theme.fontFamily
+import com.example.cuciin_temp.viewModel.MainViewModel
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun DashboardPage(NavController: NavHostController) {
-    var name by remember { mutableStateOf("Izzud") }
-    var password1 by remember { mutableStateOf("") }
-    var password2 by remember { mutableStateOf("") }
+fun DashboardPage(NavController: NavHostController, mainViewModel: MainViewModel) {
+    var name by remember { mutableStateOf(mainViewModel.customerEmail) }
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+//            .verticalScroll(rememberScrollState())
     ) {
         Column(
             modifier = Modifier
@@ -130,105 +139,65 @@ fun DashboardPage(NavController: NavHostController) {
                         )
                     )
 
+                    postGetOrder(mainViewModel, NavController)
+
                     Spacer(modifier = Modifier.height(10.dp))
+                    if (mainViewModel.listOrder != null){
+                        LazyColumn(){
+                            items(mainViewModel.listOrder){ order ->
+                                ElevatedCard(
+                                    elevation = CardDefaults.cardElevation(
+                                        defaultElevation = 6.dp
+                                    ),
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = Color.White,
+                                    ),
+                                    onClick = {}
 
-                    ElevatedCard(
-                        elevation = CardDefaults.cardElevation(
-                            defaultElevation = 6.dp
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.White,
-                        )
-
-                    ){
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(5.dp, 5.dp)
-                                .clickable { NavController.navigate("Status") }
-                        ) {
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Image(
-                                painter = painterResource(id = R.drawable.mesin),
-                                contentDescription = "image description",
-                                contentScale = ContentScale.None,
-                                modifier = Modifier
-                                    .width(41.dp)
-                                    .height(50.dp)
-                            )
-                            Spacer(modifier = Modifier.width(15.dp))
-                            Column {
-                                Text(
-                                    text = "Pesanan No.0002142",
-                                    style = TextStyle(
-                                        fontSize = 17.sp,
+                                ){
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(5.dp, 5.dp)
+                                            .clickable { NavController.navigate("Status") }
+                                    ) {
+                                        Spacer(modifier = Modifier.width(10.dp))
+                                        Image(
+                                            painter = painterResource(id = R.drawable.mesin),
+                                            contentDescription = "image description",
+                                            contentScale = ContentScale.None,
+                                            modifier = Modifier
+                                                .width(41.dp)
+                                                .height(50.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(15.dp))
+                                        Column {
+                                            Text(
+                                                text = "Pesanan ID: " + order.id,
+                                                style = TextStyle(
+                                                    fontSize = 17.sp,
 //                                            fontFamily = FontFamily(Font(R.font.fjalla one)),
-                                        fontWeight = FontWeight(400),
-                                        color = Color(0xFF000000),
-                                    )
-                                )
-                                Text(
-                                    text = "Sudah selesai",
-                                    style = TextStyle(
-                                        fontSize = 17.sp,
+                                                    fontWeight = FontWeight(400),
+                                                    color = Color(0xFF000000),
+                                                )
+                                            )
+                                            Text(
+                                                text = "status: " + order.status,
+                                                style = TextStyle(
+                                                    fontSize = 17.sp,
 //                                            fontFamily = FontFamily(Font(R.font.roboto)),
-                                        fontWeight = FontWeight(300),
-                                        color = Color(0xFF38822C),
-                                    )
-                                )
+                                                    fontWeight = FontWeight(300),
+                                                    color = Color(0xFF38822C),
+                                                )
+                                            )
+                                        }
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(5.dp))
                             }
-                        }
-                    }
 
-                    Spacer(modifier = Modifier.height(5.dp))
-                    ElevatedCard(
-                        elevation = CardDefaults.cardElevation(
-                            defaultElevation = 6.dp
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.White,
-                        )
-
-                    ){
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(5.dp, 5.dp)
-                        ) {
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Image(
-                                painter = painterResource(id = R.drawable.mesin),
-                                contentDescription = "image description",
-                                contentScale = ContentScale.None,
-                                modifier = Modifier
-                                    .width(41.dp)
-                                    .height(50.dp)
-                            )
-                            Spacer(modifier = Modifier.width(15.dp))
-                            Column {
-                                Text(
-                                    text = "Pesanan No.0002142",
-                                    style = TextStyle(
-                                        fontSize = 17.sp,
-//                                            fontFamily = FontFamily(Font(R.font.fjalla one)),
-                                        fontWeight = FontWeight(400),
-                                        color = Color(0xFF000000),
-                                    )
-                                )
-                                Text(
-                                    text = "Masih Dicuci",
-                                    style = TextStyle(
-                                        fontSize = 17.sp,
-//                                            fontFamily = FontFamily(Font(R.font.roboto)),
-                                        fontWeight = FontWeight(300),
-                                        color = Color(0xFFF50000),
-                                    )
-                                )
-                            }
                         }
                     }
 
@@ -270,7 +239,7 @@ fun DashboardPage(NavController: NavHostController) {
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(270.dp)
+                            .height(180.dp)
                             .clip(shape = RoundedCornerShape(10.dp))
 
 
@@ -407,19 +376,15 @@ fun DashboardPage(NavController: NavHostController) {
 
 
         Row(modifier = Modifier
-            .padding(top = 775.dp)
+            .padding(top = 750.dp)
             .shadow(
                 elevation = 30.dp,
                 spotColor = Color(0x40435D6B),
                 ambientColor = Color(0x40435D6B)
             )
-            .shadow(
-                elevation = 30.dp,
-                spotColor = Color(0x40435D6B),
-                ambientColor = Color(0x40435D6B)
-            )
+
             .fillMaxWidth()
-            .height(75.dp)
+            .height(120.dp)
             .background(color = Color(0xFFCAE4E9), shape = RoundedCornerShape(size = 10.dp)),
             horizontalArrangement = Arrangement.spacedBy(60.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically,
@@ -494,13 +459,47 @@ fun DashboardPage(NavController: NavHostController) {
     }
 }
 
+private fun postGetOrder(
+    mainViewModel: MainViewModel,
+    NavController: NavHostController
+) {
 
+    var url = "https://cuciin.anandadf.my.id/"
+    // on below line we are creating a retrofit
+    // builder and passing our base url
+    val retrofit = Retrofit.Builder()
+        .baseUrl(url)
+        // as we are sending data in json format so
+        // we have to add Gson converter factory
+        .addConverterFactory(GsonConverterFactory.create())
+        // at last we are building our retrofit builder.
+        .build()
+    // below the line is to create an instance for our retrofit api class.
+    val retrofitAPI = retrofit.create(RetrofitAPI::class.java)
+    // passing data from our text fields to our model class.
+    val getOrderRequest = GetOrderRequest(mainViewModel.customerId)
+    // calling a method to create an update and passing our model class.
+    val call: Call<GetOrderResponse?>? = retrofitAPI.getOrder(getOrderRequest)
+    // on below line we are executing our method.
+    call!!.enqueue(object : Callback<GetOrderResponse?> {
+        override fun onResponse(call: Call<GetOrderResponse?>?, response: Response<GetOrderResponse?>) {
+            val model: GetOrderResponse? = response.body()
+            // on below line we are getting our data from model class
+            // and adding it to our string.
 
-@Preview(showBackground = true)
-@Composable
-fun preview() {
-    val navController = rememberNavController()
-    Cuciin_tempTheme {
-        DashboardPage(NavController = navController)
-    }
+            val status: Boolean? = model?.success
+            if (status==true) {
+                mainViewModel.listOrder = model.data.pesanan
+            }
+        }
+
+        override fun onFailure(call: Call<GetOrderResponse?>?, t: Throwable) {
+            // we get error response from API.
+        }
+    })
+
 }
+
+
+
+
