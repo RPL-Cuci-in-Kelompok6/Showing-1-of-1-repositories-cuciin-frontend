@@ -70,7 +70,7 @@ fun DaftarLayanan(NavController: NavHostController) {
                 .padding(start = 20.dp)
                 .width(20.dp)
                 .height(14.49874.dp)
-                .clickable { NavController.navigate("Pesan")},
+                .clickable { NavController.navigate("Type")},
                 painter = painterResource(id = R.drawable.panah),
                 contentDescription = "image description",
                 contentScale = ContentScale.None
@@ -114,7 +114,7 @@ fun DaftarLayanan(NavController: NavHostController) {
             .width(306.dp)
             .height(50.dp)
             .background(color = Color(0xFF3D4EB0), shape = RoundedCornerShape(size = 5.08002.dp))
-            .clickable { NavController.navigate("Type") },
+            .clickable { NavController.navigate("Booking") },
 
             ) {
             Text(modifier = Modifier

@@ -5,13 +5,9 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -32,10 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cuciin_temp.Navigation.navigation
-import com.example.cuciin_temp.model.MitraX
-import com.example.cuciin_temp.ui.theme.Cuciin_tempTheme
-import com.example.cuciin_temp.viewModel.MitraViewModel
+import com.example.cuciin_temp.viewModel.MainViewModel
 
 class MainActivity : ComponentActivity() {
 
@@ -44,6 +39,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val mainViewModel = viewModel<MainViewModel>()
             // A surface container using the 'background' color from the theme
             Surface(
                 modifier = Modifier
@@ -51,7 +47,7 @@ class MainActivity : ComponentActivity() {
                 color = Color(0xFFEAFCFF)
 
             ) {
-                navigation()
+                navigation(mainViewModel)
 
             }
         }

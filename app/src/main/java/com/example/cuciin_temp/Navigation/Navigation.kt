@@ -14,10 +14,11 @@ import com.example.cuciin_temp.Profile
 import com.example.cuciin_temp.RegisterPage
 import com.example.cuciin_temp.Status
 import com.example.cuciin_temp.TypeCucian
+import com.example.cuciin_temp.viewModel.MainViewModel
 
 
 @Composable
-fun navigation(){
+fun navigation(mainViewModel : MainViewModel){
     val NavController = rememberNavController()
     NavHost(navController = NavController, startDestination = "Login"){
         composable(route = "Login"){

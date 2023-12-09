@@ -66,7 +66,7 @@ fun TypeCucian(NavController: NavHostController) {
                 .padding(start = 20.dp)
                 .width(20.dp)
                 .height(14.49874.dp)
-                .clickable { NavController.navigate("Layanan") },
+                .clickable { NavController.navigate("Pesan") },
                 painter = painterResource(id = R.drawable.panah),
                 contentDescription = "image description",
                 contentScale = ContentScale.None
@@ -153,7 +153,7 @@ fun TypeCucian(NavController: NavHostController) {
             .width(306.dp)
             .height(50.dp)
             .background(color = Color(0xFF3D4EB0), shape = RoundedCornerShape(size = 5.08002.dp))
-            .clickable { NavController.navigate("Booking") },
+            .clickable { NavController.navigate("Layanan") },
 
             ) {
             Text(modifier = Modifier

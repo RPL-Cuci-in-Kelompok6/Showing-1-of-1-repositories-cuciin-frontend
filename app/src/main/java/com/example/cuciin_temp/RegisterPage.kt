@@ -21,6 +21,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -51,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.cuciin_temp.model.DataModel
+import com.example.cuciin_temp.model.RegisterResponse
 import com.example.cuciin_temp.network.RetrofitAPI
 import retrofit2.Call
 import retrofit2.Callback
@@ -95,10 +99,10 @@ fun RegisterPage(NavController: NavHostController) {
                 mutableStateOf(TextFieldValue())
             }
             val Name = remember {
-                mutableStateOf(TextFieldValue("Rifky"))
+                mutableStateOf(TextFieldValue())
             }
             val Telp = remember {
-                mutableStateOf(TextFieldValue("0088231"))
+                mutableStateOf(TextFieldValue())
             }
 
             val response = remember {
@@ -110,9 +114,37 @@ fun RegisterPage(NavController: NavHostController) {
             var password2 by remember { mutableStateOf("") }
 */
             OutlinedTextField(
+                value = Name.value,
+                onValueChange = { Name.value = it },
+                label = { Text("Nama Lengkap") },
+                leadingIcon = { Icon(Icons.Outlined.Person, contentDescription = null) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = Color(0xFFF5F5F5)
+                )
+
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+            OutlinedTextField(
+                value = Telp.value,
+                onValueChange = { Telp.value = it },
+                label = { Text("No. Telepon") },
+                leadingIcon = { Icon(Icons.Outlined.Phone, contentDescription = null) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = Color(0xFFF5F5F5)
+                )
+
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+
+            OutlinedTextField(
                 value = Mail.value,
                 onValueChange = { Mail.value = it },
-                label = { Text("Username or Email") },
+                label = { Text("Email") },
                 leadingIcon = { Icon(Icons.Outlined.Email, contentDescription = null) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
@@ -122,12 +154,12 @@ fun RegisterPage(NavController: NavHostController) {
 
             )
 
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             OutlinedTextField(
                 value = Password.value,
                 onValueChange = { Password.value = it },
-                label = { Text("Username or Email") },
-                leadingIcon = { Icon(Icons.Outlined.Email, contentDescription = null) },
+                label = { Text("Password") },
+                leadingIcon = { Icon(Icons.Outlined.Lock, contentDescription = null) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -136,23 +168,14 @@ fun RegisterPage(NavController: NavHostController) {
 
             )
 
-            /*PasswordTextField(
-                password = password1,
-                onPasswordChange = { newPassword ->
-                    password1 = newPassword
-                },
-                label = "Password"
-            )
+//            PasswordTextField(
+//                password = password1,
+//                onPasswordChange = { newPassword ->
+//                    password1 = newPassword
+//                },
+//                label = "Password"
+//            )
 
-            Spacer(modifier = Modifier.height(15.dp))
-
-            PasswordTextField(
-                password = password2,
-                onPasswordChange = { newPassword ->
-                    password2 = newPassword
-                },
-                label = "Password"
-            )*/
 
             Spacer(modifier = Modifier.height(10.dp))
 
@@ -171,7 +194,7 @@ fun RegisterPage(NavController: NavHostController) {
             // Tombol Rgister
             Button(
                 onClick = { /*NavController.navigate("Login")*/ postDataUsingRetrofit(
-                    ctx,Name, Mail, Password, Telp, response
+                    ctx,Name, Mail, Password, Telp
                 ) },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -187,15 +210,7 @@ fun RegisterPage(NavController: NavHostController) {
 
 
             Spacer(modifier = Modifier.height(35.dp))
-            Text(
-                text = response.value,
-                color = Color.Black,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold, modifier = Modifier
-                    .padding(10.dp)
-                    .fillMaxWidth(),
-                textAlign = TextAlign.Center
-            )
+
 
             Column(
                 modifier = Modifier
@@ -330,8 +345,8 @@ private fun postDataUsingRetrofit(
     email: MutableState<TextFieldValue>,
     password: MutableState<TextFieldValue>,
     telepon: MutableState<TextFieldValue>,
-    result: MutableState<String>
 ) {
+
     var url = "https://cuciin.anandadf.my.id/"
     // on below line we are creating a retrofit
     // builder and passing our base url
@@ -347,30 +362,25 @@ private fun postDataUsingRetrofit(
     // passing data from our text fields to our model class.
     val dataModel = DataModel(nama.value.text, email.value.text, password.value.text, telepon.value.text)
     // calling a method to create an update and passing our model class.
-    val call: Call<DataModel?>? = retrofitAPI.postData(dataModel)
+    val call: Call<RegisterResponse?>? = retrofitAPI.postData(dataModel)
     // on below line we are executing our method.
-    call!!.enqueue(object : Callback<DataModel?> {
-        override fun onResponse(call: Call<DataModel?>?, response: Response<DataModel?>) {
+    call!!.enqueue(object : Callback<RegisterResponse?> {
+        override fun onResponse(call: Call<RegisterResponse?>?, response: Response<RegisterResponse?>) {
             // this method is called when we get response from our api.
-            Toast.makeText(ctx, "Data posted to API", Toast.LENGTH_SHORT).show()
+
             // we are getting a response from our body and
             // passing it to our model class.
-            val model: DataModel? = response.body()
+            val model: RegisterResponse? = response.body()
             // on below line we are getting our data from model class
             // and adding it to our string.
             val resp =
-                "Response Code : " + response.code() + "\n" +
-                        "User Name : " + model!!.nama + "\n" +
-                        "email : " + model!!.email + "\n" +
-                        "telepon :" + model!!.telpon + "\n" +
-                        "password :" + model!!.password
+                "Response Code : " + response.code() + "\n" + model?.message
+            Toast.makeText(ctx, resp, Toast.LENGTH_SHORT).show()
                         // below line we are setting our string to our response.
-            result.value = resp
         }
 
-        override fun onFailure(call: Call<DataModel?>?, t: Throwable) {
+        override fun onFailure(call: Call<RegisterResponse?>?, t: Throwable) {
             // we get error response from API.
-            result.value = "Error found is : " + t.message
         }
     })
 

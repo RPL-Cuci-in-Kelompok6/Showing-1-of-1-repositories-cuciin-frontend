@@ -1,16 +1,14 @@
 package com.example.cuciin_temp
 
-import androidx.activity.viewModels
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,12 +21,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -41,17 +37,27 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.cuciin_temp.model.DataModel
 import com.example.cuciin_temp.model.MitraX
-import com.example.cuciin_temp.viewModel.MitraViewModel
+import com.example.cuciin_temp.model.Services
+import com.example.cuciin_temp.network.RetrofitAPI
+import com.example.cuciin_temp.viewModel.MainViewModel
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun MitraPage(NavController: NavHostController) {
-    val mitraViewModel = viewModel<MitraViewModel>()
+    val mainViewModel = viewModel<MainViewModel>()
 //    val vm = viewModel<MainViewModel>()
     Scaffold(
         topBar = {
@@ -87,11 +93,11 @@ fun MitraPage(NavController: NavHostController) {
 
             LazyColumn {
 
-                items(mitraViewModel.MitraXListResponse) { item ->
+                items(mainViewModel.MitraXListResponse) { item ->
                     MitraItem(item, NavController)
                 }
             }
-            mitraViewModel.getMitraX()
+            mainViewModel.getMitraX()
 
 
 
@@ -103,13 +109,17 @@ fun MitraPage(NavController: NavHostController) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MitraItem(mitraX : MitraX, NavController: NavHostController) {
+    val ctx = LocalContext.current
     Card(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 6.dp
         ),
         modifier = Modifier
             .fillMaxWidth(),
-        onClick = { NavController.navigate("Layanan") }
+        onClick = {
+            getServicesById(ctx, mitraX.id)
+//            NavController.navigate("Type")
+        }
 
     ) {
         Row (
@@ -184,5 +194,60 @@ fun MitraItem(mitraX : MitraX, NavController: NavHostController) {
             }
         }
     }
+
+}
+
+
+private fun getServicesById(
+    ctx: Context,
+    id: Int,
+) {
+    try {
+        var url = "https://cuciin.anandadf.my.id/"
+        // on below line we are creating a retrofit
+        // builder and passing our base url
+        val retrofit = Retrofit.Builder()
+            .baseUrl(url)
+            // as we are sending data in json format so
+            // we have to add Gson converter factory
+            .addConverterFactory(GsonConverterFactory.create())
+            // at last we are building our retrofit builder.
+            .build()
+        // below the line is to create an instance for our retrofit api class.
+        val retrofitAPI = retrofit.create(RetrofitAPI::class.java)
+        // passing data from our text fields to our model class.
+
+        // calling a method to create an update and passing our model class.
+        val call: Call<Services> = retrofitAPI.getServices(2)
+        // on below line we are executing our method.
+        call!!.enqueue(object : Callback<Services?> {
+            override fun onResponse(call: Call<Services?>, response: Response<Services?>) {
+                // this method is called when we get response from our api.
+
+                // we are getting a response from our body and
+                // passing it to our model class.
+                val model: Services? = response.body()
+                // on below line we are getting our data from model class
+                // and adding it to our string.
+                val resp =
+                    "Response Code : " + response.code() + "\n"+
+                            "Success : " + model?.success
+
+                Toast.makeText(ctx, resp, Toast.LENGTH_SHORT).show()
+                // below line we are setting our string to our response.
+            }
+
+            override fun onFailure(call: Call<Services?>, t: Throwable) {
+                // we get error response from API.
+//            result.value = "Error found is : " + t.message
+            }
+        })
+
+    }
+    catch (e: Exception) {
+        Toast.makeText(ctx, e.message.toString(), Toast.LENGTH_SHORT).show()
+    }
+
+
 
 }

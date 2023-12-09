@@ -1,5 +1,7 @@
 package com.example.cuciin_temp
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,13 +44,27 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.example.cuciin_temp.model.DataModel
+import com.example.cuciin_temp.model.LoginRequest
+import com.example.cuciin_temp.model.LoginResponse
+import com.example.cuciin_temp.model.RegisterResponse
+import com.example.cuciin_temp.network.RetrofitAPI
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun LoginPage(NavController: NavHostController) {
+    val ctx = LocalContext.current
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -74,13 +90,13 @@ fun LoginPage(NavController: NavHostController) {
             Spacer(modifier = Modifier.height(20.dp))
 
             // TextFields untuk username dan password
-            var username by remember { mutableStateOf("") }
+            var email by remember { mutableStateOf("") }
             var password by remember { mutableStateOf("") }
 
             OutlinedTextField(
-                value = username,
-                onValueChange = { username = it },
-                label = { Text("Username or Email") },
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email") },
                 leadingIcon = { Icon(Icons.Outlined.Email, contentDescription = null) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
@@ -119,7 +135,7 @@ fun LoginPage(NavController: NavHostController) {
 
             // Tombol Login
             Button(
-                onClick = { LoginValidate(username, password, NavController) },
+                onClick = { LoginValidate(ctx, email, password, NavController) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp),
@@ -264,15 +280,51 @@ fun LoginPage(NavController: NavHostController) {
 
 }
 
-fun LoginValidate(username:String, password:String, NavController: NavHostController) {
-    val dummyUsername = "izzud"
-    val dummyPassword = "1234"
+private fun LoginValidate(
+    ctx: Context,
+    email: String,
+    password: String,
+    NavController: NavHostController
 
-    if (username == dummyUsername && password == dummyPassword) {
-        // Successful login, navigate to Dashboard
-        NavController.navigate("Dashboard")
-    } else {
-        // Display a message or handle unsuccessful login
-        
-    }
+) {
+
+    var url = "https://cuciin.anandadf.my.id/"
+    // on below line we are creating a retrofit
+    // builder and passing our base url
+    val retrofit = Retrofit.Builder()
+        .baseUrl(url)
+        // as we are sending data in json format so
+        // we have to add Gson converter factory
+        .addConverterFactory(GsonConverterFactory.create())
+        // at last we are building our retrofit builder.
+        .build()
+    // below the line is to create an instance for our retrofit api class.
+    val retrofitAPI = retrofit.create(RetrofitAPI::class.java)
+    // passing data from our text fields to our model class.
+    val loginRequest = LoginRequest(email, password)
+    // calling a method to create an update and passing our model class.
+    val call: Call<LoginResponse?>? = retrofitAPI.loginCustomer(loginRequest)
+    // on below line we are executing our method.
+    call!!.enqueue(object : Callback<LoginResponse?> {
+        override fun onResponse(call: Call<LoginResponse?>?, response: Response<LoginResponse?>) {
+            // this method is called when we get response from our api.
+
+            // we are getting a response from our body and
+            // passing it to our model class.
+            val model: LoginResponse? = response.body()
+            // on below line we are getting our data from model class
+            // and adding it to our string.
+            val resp =
+                "Response Code : " + response.code() + "\n" + model?.message
+            Toast.makeText(ctx, resp, Toast.LENGTH_SHORT).show()
+            val status: Boolean? = model?.success
+            if (status==true) NavController.navigate("Dashboard")
+
+        }
+
+        override fun onFailure(call: Call<LoginResponse?>?, t: Throwable) {
+            // we get error response from API.
+        }
+    })
+
 }
