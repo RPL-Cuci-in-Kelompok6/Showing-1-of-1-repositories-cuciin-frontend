@@ -144,7 +144,7 @@ fun DashboardPage(NavController: NavHostController, mainViewModel: MainViewModel
                     postGetOrder(mainViewModel, NavController)
 
                     Spacer(modifier = Modifier.height(10.dp))
-                    if (mainViewModel.listOrder != null){
+                    if (mainViewModel.listOrder.isNotEmpty()){
                         LazyColumn(
                             modifier = Modifier.height(200.dp)
                         ){
@@ -206,21 +206,17 @@ fun DashboardPage(NavController: NavHostController, mainViewModel: MainViewModel
                             }
 
                         }
-                    }else{
-                        Column (
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ){
-                            Spacer(modifier = Modifier.height(5.dp))
-                            Text(
-                                text = "belum ada order yang terbuat",
-                                style = TextStyle(
-                                    fontSize = 17.sp,
+                    } else{
+                        Spacer(modifier = Modifier.height(5.dp))
+                        Text(
+                            text = "belum ada order yang terbuat",
+                            style = TextStyle(
+                                fontSize = 17.sp,
 //                                            fontFamily = FontFamily(Font(R.font.fjalla one)),
-                                    fontWeight = FontWeight(400),
-                                    color = Color(0xFF000000),
-                                )
+                                fontWeight = FontWeight(400),
+                                color = Color(0xFF000000),
                             )
-                        }
+                        )
                     }
 
                     Spacer(modifier = Modifier.height(10.dp))
@@ -513,7 +509,7 @@ private fun postGetOrder(
 
             val status: Boolean? = model?.success
             if (status==true) {
-                mainViewModel.listOrder = model.data.pesanan
+                if(model.data.pesanan != null) mainViewModel.listOrder = model.data.pesanan
             }
         }
 

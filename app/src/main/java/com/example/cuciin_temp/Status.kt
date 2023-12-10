@@ -310,14 +310,24 @@ fun Status(NavController: NavHostController, mainViewModel: MainViewModel) {
                     )
                 )
             }
-            Column(modifier = Modifier
-                .padding(top = 50.dp, start = 10.dp)
-                .width(150.dp)
-                .height(50.dp)
-                .background(color = Color(0xFF3D4EB0), shape = RoundedCornerShape(size = 5.08002.dp))
-                .clickable { NavController.navigate("Booking") },
-
-                ) {
+            Column(
+                modifier = Modifier
+                    .padding(top = 50.dp, start = 10.dp)
+                    .width(150.dp)
+                    .height(50.dp)
+                    .background(
+                        color = if (!mainViewModel.selectedPesanan.sudahBayar) {
+                            Color(0xFF3D4EB0) // Warna ketika kondisi terpenuhi
+                        } else {
+                            Color(0xFFA6AFE6) // Warna ketika kondisi tidak terpenuhi
+                        },
+                        shape = RoundedCornerShape(size = 5.08002.dp)
+                    )
+                    .clickable {
+                        if (!mainViewModel.selectedPesanan.sudahBayar) NavController.navigate("Booking")
+                    },
+            )
+            {
                 Text(modifier = Modifier
                     .padding(top = 10.dp)
                     .fillMaxSize(),

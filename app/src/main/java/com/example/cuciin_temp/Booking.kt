@@ -1,5 +1,7 @@
 package com.example.cuciin_temp
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -36,12 +39,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.cuciin_temp.model.LoginRequest
+import com.example.cuciin_temp.model.LoginResponse
+import com.example.cuciin_temp.model.PayOrderRequest
+import com.example.cuciin_temp.model.PayOrderResponse
+import com.example.cuciin_temp.network.RetrofitAPI
 import com.example.cuciin_temp.ui.theme.Cuciin_tempTheme
 import com.example.cuciin_temp.ui.theme.fontFamily
+import com.example.cuciin_temp.viewModel.MainViewModel
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 
 @Composable
-fun Booking(NavController: NavHostController) {
+fun Booking(NavController: NavHostController, mainViewModel: MainViewModel) {
+    val ctx = LocalContext.current
     Column(modifier = Modifier
         .fillMaxSize()
         .background(color = Color(0xFFEAFCFF))
@@ -145,7 +160,7 @@ fun Booking(NavController: NavHostController) {
             .width(306.dp)
             .height(50.dp)
             .background(color = Color(0xFF3D4EB0), shape = RoundedCornerShape(size = 5.08002.dp))
-            .clickable { NavController.navigate("Dashboard") },
+            .clickable { postPayOrder(ctx, NavController, mainViewModel) },
 
             ) {
             Text(modifier = Modifier
@@ -224,11 +239,52 @@ fun Payment() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun BookingPreview() {
-    val navController = rememberNavController()
-    Cuciin_tempTheme {
-        Booking(NavController = navController)
-    }
+private fun postPayOrder(
+    ctx: Context,
+    NavController: NavHostController,
+    mainViewModel: MainViewModel
+
+) {
+
+    var url = "https://cuciin.anandadf.my.id/"
+    // on below line we are creating a retrofit
+    // builder and passing our base url
+    val retrofit = Retrofit.Builder()
+        .baseUrl(url)
+        // as we are sending data in json format so
+        // we have to add Gson converter factory
+        .addConverterFactory(GsonConverterFactory.create())
+        // at last we are building our retrofit builder.
+        .build()
+    // below the line is to create an instance for our retrofit api class.
+    val retrofitAPI = retrofit.create(RetrofitAPI::class.java)
+    // passing data from our text fields to our model class.
+    val payOrderRequest = PayOrderRequest(mainViewModel.selectedPesanan.id)
+    // calling a method to create an update and passing our model class.
+    val call: Call<PayOrderResponse?>? = retrofitAPI.payOrder(payOrderRequest)
+    // on below line we are executing our method.
+    call!!.enqueue(object : Callback<PayOrderResponse?> {
+        override fun onResponse(call: Call<PayOrderResponse?>?, response: Response<PayOrderResponse?>) {
+            // this method is called when we get response from our api.
+
+            // we are getting a response from our body and
+            // passing it to our model class.
+            val model: PayOrderResponse? = response.body()
+            // on below line we are getting our data from model class
+            // and adding it to our string.
+            val resp =
+                "Response Code : " + response.code() + "\n" + model?.message
+            Toast.makeText(ctx, resp, Toast.LENGTH_SHORT).show()
+            val status: Boolean? = model?.success
+            if (status==true) {
+                NavController.navigate("Dashboard")
+            }
+
+        }
+
+        override fun onFailure(call: Call<PayOrderResponse?>?, t: Throwable) {
+            // we get error response from API.
+        }
+    })
+
 }

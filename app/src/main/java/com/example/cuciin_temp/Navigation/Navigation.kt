@@ -43,7 +43,7 @@ fun navigation(mainViewModel : MainViewModel){
             TypeCucian(NavController, mainViewModel)
         }
         composable(route = "Booking"){
-            Booking(NavController)
+            Booking(NavController, mainViewModel)
         }
         composable(route = "Profile"){
             Profile(NavController)

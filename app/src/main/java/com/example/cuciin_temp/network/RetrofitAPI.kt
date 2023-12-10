@@ -7,6 +7,8 @@ import com.example.cuciin_temp.model.GetOrderRequest
 import com.example.cuciin_temp.model.GetOrderResponse
 import com.example.cuciin_temp.model.LoginRequest
 import com.example.cuciin_temp.model.LoginResponse
+import com.example.cuciin_temp.model.PayOrderRequest
+import com.example.cuciin_temp.model.PayOrderResponse
 import com.example.cuciin_temp.model.RegisterResponse
 import com.example.cuciin_temp.model.ServicesRequest
 import com.example.cuciin_temp.model.ServicesResponses
@@ -29,4 +31,7 @@ interface RetrofitAPI {
 
     @POST("customer/order")
     fun getOrder(@Body getOrderRequest: GetOrderRequest?): Call<GetOrderResponse?>?
+
+    @POST("customer/order/pay")
+    fun payOrder(@Body payOrderRequest: PayOrderRequest?): Call<PayOrderResponse?>?
 }
