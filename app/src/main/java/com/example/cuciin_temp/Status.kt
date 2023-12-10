@@ -1,5 +1,7 @@
 package com.example.cuciin_temp
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -37,13 +40,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.cuciin_temp.model.CancelOrderRequest
+import com.example.cuciin_temp.model.CancelOrderResponse
+import com.example.cuciin_temp.model.LoginRequest
+import com.example.cuciin_temp.model.LoginResponse
+import com.example.cuciin_temp.network.RetrofitAPI
 import com.example.cuciin_temp.ui.theme.Cuciin_tempTheme
 import com.example.cuciin_temp.ui.theme.fontFamily
 import com.example.cuciin_temp.viewModel.MainViewModel
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 
 @Composable
 fun Status(NavController: NavHostController, mainViewModel: MainViewModel) {
+    val ctx = LocalContext.current
     Column(modifier = Modifier
         .fillMaxSize()
         .background(color = Color(0xFFEAFCFF))
@@ -293,8 +307,19 @@ fun Status(NavController: NavHostController, mainViewModel: MainViewModel) {
                 .padding(top = 50.dp, start = 30.dp)
                 .width(150.dp)
                 .height(50.dp)
-                .background(color = Color(0xFF3D4EB0), shape = RoundedCornerShape(size = 5.08002.dp))
-                .clickable { NavController.navigate("Dashboard") },
+                .background(
+                    color = if (!mainViewModel.selectedPesanan.sudahBayar && mainViewModel.selectedPesanan.status != "canceled") {
+                        Color(0xFF3D4EB0) // Warna ketika kondisi terpenuhi
+                    } else {
+                        Color(0xFFA6AFE6) // Warna ketika kondisi tidak terpenuhi
+                    },
+                    shape = RoundedCornerShape(size = 5.08002.dp)
+                )
+                .clickable {
+                    if (!mainViewModel.selectedPesanan.sudahBayar && mainViewModel.selectedPesanan.status != "canceled") {
+                        postCancelOrder(ctx, NavController, mainViewModel)
+                    }
+                },
 
                 ) {
                 Text(modifier = Modifier
@@ -316,7 +341,7 @@ fun Status(NavController: NavHostController, mainViewModel: MainViewModel) {
                     .width(150.dp)
                     .height(50.dp)
                     .background(
-                        color = if (!mainViewModel.selectedPesanan.sudahBayar) {
+                        color = if (!mainViewModel.selectedPesanan.sudahBayar && mainViewModel.selectedPesanan.status != "canceled") {
                             Color(0xFF3D4EB0) // Warna ketika kondisi terpenuhi
                         } else {
                             Color(0xFFA6AFE6) // Warna ketika kondisi tidak terpenuhi
@@ -324,10 +349,11 @@ fun Status(NavController: NavHostController, mainViewModel: MainViewModel) {
                         shape = RoundedCornerShape(size = 5.08002.dp)
                     )
                     .clickable {
-                        if (!mainViewModel.selectedPesanan.sudahBayar) NavController.navigate("Booking")
+                        if (!mainViewModel.selectedPesanan.sudahBayar && mainViewModel.selectedPesanan.status != "canceled"){
+                            NavController.navigate("Booking")
+                        }
                     },
-            )
-            {
+            ) {
                 Text(modifier = Modifier
                     .padding(top = 10.dp)
                     .fillMaxSize(),
@@ -344,6 +370,56 @@ fun Status(NavController: NavHostController, mainViewModel: MainViewModel) {
         }
 
     }
+}
+
+private fun postCancelOrder(
+    ctx: Context,
+    NavController: NavHostController,
+    mainViewModel: MainViewModel
+
+) {
+
+    var url = "https://cuciin.anandadf.my.id/"
+    // on below line we are creating a retrofit
+    // builder and passing our base url
+    val retrofit = Retrofit.Builder()
+        .baseUrl(url)
+        // as we are sending data in json format so
+        // we have to add Gson converter factory
+        .addConverterFactory(GsonConverterFactory.create())
+        // at last we are building our retrofit builder.
+        .build()
+    // below the line is to create an instance for our retrofit api class.
+    val retrofitAPI = retrofit.create(RetrofitAPI::class.java)
+    // passing data from our text fields to our model class.
+    val cancelOrderRequest = CancelOrderRequest(mainViewModel.selectedPesanan.id)
+    // calling a method to create an update and passing our model class.
+    val call: Call<CancelOrderResponse?>? = retrofitAPI.cancelOrder(cancelOrderRequest)
+    // on below line we are executing our method.
+    call!!.enqueue(object : Callback<CancelOrderResponse?> {
+        override fun onResponse(call: Call<CancelOrderResponse?>?, response: Response<CancelOrderResponse?>) {
+            // this method is called when we get response from our api.
+
+            // we are getting a response from our body and
+            // passing it to our model class.
+            val model: CancelOrderResponse? = response.body()
+            // on below line we are getting our data from model class
+            // and adding it to our string.
+            val resp =
+                "Response Code : " + response.code() + "\n" + model?.message
+            Toast.makeText(ctx, resp, Toast.LENGTH_SHORT).show()
+            val status: Boolean? = model?.success
+            if (status==true) {
+                NavController.navigate("Dashboard")
+            }
+
+        }
+
+        override fun onFailure(call: Call<CancelOrderResponse?>?, t: Throwable) {
+            // we get error response from API.
+        }
+    })
+
 }
 
 

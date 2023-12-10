@@ -194,9 +194,13 @@ fun DashboardPage(NavController: NavHostController, mainViewModel: MainViewModel
                                                 text = "status: " + order.status,
                                                 style = TextStyle(
                                                     fontSize = 17.sp,
-//                                            fontFamily = FontFamily(Font(R.font.roboto)),
                                                     fontWeight = FontWeight(300),
-                                                    color = Color(0xFF38822C),
+                                                    color = when (order.status) {
+                                                        "completed" -> Color(0xFF38822C)  // Warna untuk status "completed"
+                                                        "canceled" -> Color(0xFFF44336)    // Warna untuk status "pending"
+                                                        // Tambahkan kondisi lain jika diperlukan
+                                                        else -> Color(0xFFFFC107)                // Warna default jika tidak ada kondisi yang cocok
+                                                    }
                                                 )
                                             )
                                         }

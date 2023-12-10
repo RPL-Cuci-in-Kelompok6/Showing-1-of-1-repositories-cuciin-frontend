@@ -229,17 +229,18 @@ fun Profile(NavController: NavHostController) {
         ) {
             Row (modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 10.dp),
+                .padding(top = 10.dp)
+                .clickable { NavController.navigate("Login") },
                 horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
                 verticalAlignment = Alignment.CenterVertically,
+
             ) {
 
                 Image(
                     modifier = Modifier
                         .padding(start = 20.dp)
                         .width(20.dp)
-                        .height(22.49874.dp)
-                        .clickable { NavController.navigate("Dashboard") },
+                        .height(22.49874.dp),
                     painter = painterResource(id = R.drawable.signout),
                     contentDescription = "image description",
                     contentScale = ContentScale.None

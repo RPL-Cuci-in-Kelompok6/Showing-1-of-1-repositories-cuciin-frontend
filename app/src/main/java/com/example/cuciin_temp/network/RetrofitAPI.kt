@@ -1,5 +1,7 @@
 package com.example.cuciin_temp.network
 
+import com.example.cuciin_temp.model.CancelOrderRequest
+import com.example.cuciin_temp.model.CancelOrderResponse
 import com.example.cuciin_temp.model.CreateOrderRequest
 import com.example.cuciin_temp.model.CreateOrderResponse
 import com.example.cuciin_temp.model.DataModel
@@ -34,4 +36,7 @@ interface RetrofitAPI {
 
     @POST("customer/order/pay")
     fun payOrder(@Body payOrderRequest: PayOrderRequest?): Call<PayOrderResponse?>?
+
+    @POST("customer/order/cancel")
+    fun cancelOrder(@Body cancelOrderRequest: CancelOrderRequest?): Call<CancelOrderResponse?>?
 }
