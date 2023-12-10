@@ -44,9 +44,13 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.cuciin_temp.ui.theme.Cuciin_tempTheme
 import com.example.cuciin_temp.ui.theme.fontFamily
+import com.example.cuciin_temp.viewModel.MainViewModel
 
 @Composable
-fun Profile(NavController: NavHostController) {
+fun Profile(NavController: NavHostController, mainViewModel: MainViewModel) {
+    if(mainViewModel.customerEmail == ""){
+        NavController.navigate("Login")
+    }
     Column(modifier = Modifier
         .fillMaxSize()
         .background(color = Color(0xFFEAFCFF))
@@ -230,7 +234,12 @@ fun Profile(NavController: NavHostController) {
             Row (modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 10.dp)
-                .clickable { NavController.navigate("Login") },
+                .clickable {
+                    mainViewModel.listOrder = emptyList()
+                    mainViewModel.customerEmail = ""
+                    mainViewModel.customerId = 0
+                    NavController.navigate("Login")
+                },
                 horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
                 verticalAlignment = Alignment.CenterVertically,
 
@@ -397,11 +406,3 @@ fun ProfileImage(){
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun profilePreview() {
-    val navController = rememberNavController()
-    Cuciin_tempTheme {
-        Profile(NavController = navController)
-    }
-}

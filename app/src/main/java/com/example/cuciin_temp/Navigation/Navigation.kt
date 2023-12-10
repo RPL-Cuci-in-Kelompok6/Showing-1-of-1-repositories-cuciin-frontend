@@ -46,7 +46,7 @@ fun navigation(mainViewModel : MainViewModel){
             Booking(NavController, mainViewModel)
         }
         composable(route = "Profile"){
-            Profile(NavController)
+            Profile(NavController, mainViewModel)
         }
         composable(route = "Status"){
             Status(NavController, mainViewModel)

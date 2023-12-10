@@ -65,6 +65,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun DashboardPage(NavController: NavHostController, mainViewModel: MainViewModel) {
+    if(mainViewModel.customerEmail == ""){
+        NavController.navigate("Login")
+    }
     var name by remember { mutableStateOf(mainViewModel.customerEmail) }
     Box(
         modifier = Modifier
