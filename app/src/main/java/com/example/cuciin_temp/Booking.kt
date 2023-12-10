@@ -82,7 +82,7 @@ fun Booking(NavController: NavHostController, mainViewModel: MainViewModel) {
             Text( modifier = Modifier
                 .width(200.dp)
                 .height(32.dp),
-                text = "Booking",
+                text = "Pembayaran",
                 style = TextStyle(
                     fontSize = 22.sp,
                     fontFamily = fontFamily,
@@ -95,7 +95,7 @@ fun Booking(NavController: NavHostController, mainViewModel: MainViewModel) {
         Spacer(modifier = Modifier.size(40.dp))
         Text(modifier = Modifier
             .fillMaxWidth(),
-            text = "Mesin Cuci 11",
+            text = "ID Pesanan : " + mainViewModel.selectedPesanan.id,
             style = TextStyle(
                 fontSize = 22.sp,
                 fontFamily = fontFamily,
@@ -105,40 +105,10 @@ fun Booking(NavController: NavHostController, mainViewModel: MainViewModel) {
             )
         )
         Spacer(modifier = Modifier.size(10.dp))
-        Row (modifier = Modifier
-            .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = "Available",
-                style = TextStyle(
-                    fontSize = 12.sp,
-                    fontFamily = fontFamily,
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFF6E6F79),
-                )
-            )
-            Box(modifier = Modifier
-                .padding(0.dp)
-                .width(1.dp)
-                .height(20.04796.dp)
-                .background(color = Color(0xFF6E6F79))
-            )
-            Text(
-                text = "Fuzzy Laundry",
-                style = TextStyle(
-                    fontSize = 12.sp,
-                    fontFamily = fontFamily,
-                    fontWeight = FontWeight(400),
-                    color = Color(0xFF6E6F79),
-                )
-            )
-        }
         Spacer(modifier = Modifier.size(40.dp))
         Text(modifier = Modifier
             .padding(start = 30.dp),
-            text = "Choose wash type",
+            text = "Pilih Metode Pembayaran",
             style = TextStyle(
                 fontSize = 20.sp,
                 fontFamily = fontFamily,

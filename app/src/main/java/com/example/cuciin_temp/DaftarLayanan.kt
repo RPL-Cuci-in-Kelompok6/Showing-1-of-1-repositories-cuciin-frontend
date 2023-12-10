@@ -285,7 +285,6 @@ private fun postCreateOrder(
             Toast.makeText(ctx, resp, Toast.LENGTH_SHORT).show()
             val status: Boolean? = model?.success
             if (status==true) {
-
                 NavController.navigate("Dashboard")
             }
 

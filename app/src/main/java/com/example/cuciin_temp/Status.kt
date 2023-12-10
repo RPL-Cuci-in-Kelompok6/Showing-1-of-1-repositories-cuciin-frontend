@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,6 +59,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Composable
 fun Status(NavController: NavHostController, mainViewModel: MainViewModel) {
     val ctx = LocalContext.current
+    var isVisible by rememberSaveable { mutableStateOf(false) }
     Column(modifier = Modifier
         .fillMaxSize()
         .background(color = Color(0xFFEAFCFF))
@@ -83,7 +85,7 @@ fun Status(NavController: NavHostController, mainViewModel: MainViewModel) {
             Text( modifier = Modifier
                 .width(200.dp)
                 .height(32.dp),
-                text = "Status Pesanan",
+                text = "Order",
                 style = TextStyle(
                     fontSize = 22.sp,
                     fontFamily = fontFamily,
@@ -140,22 +142,13 @@ fun Status(NavController: NavHostController, mainViewModel: MainViewModel) {
             ) {
                 Text(modifier = Modifier
                     .fillMaxWidth(),
-                    text = "Mesin Cuci 11",
+                    text = "Status Pesanan",
                     style = TextStyle(
                         fontSize = 22.sp,
                         fontFamily = fontFamily,
                         fontWeight = FontWeight(600),
                         color = Color(0xFF000000),
                         textAlign = TextAlign.Center,
-                    )
-                )
-                Text(
-                    text = "BUDDY LAUNDRY",
-                    style = TextStyle(
-                        fontSize = 12.sp,
-                        fontFamily = fontFamily,
-                        fontWeight = FontWeight(400),
-                        color = Color(0xFF6E6F79),
                     )
                 )
                 Spacer(modifier = Modifier.size(5.dp))
@@ -297,47 +290,15 @@ fun Status(NavController: NavHostController, mainViewModel: MainViewModel) {
 
 
         Spacer(modifier = Modifier.size(40.dp))
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 20.dp),
-            horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.Start),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Column(modifier = Modifier
-                .padding(top = 50.dp, start = 30.dp)
-                .width(150.dp)
-                .height(50.dp)
-                .background(
-                    color = if (!mainViewModel.selectedPesanan.sudahBayar && mainViewModel.selectedPesanan.status != "canceled") {
-                        Color(0xFF3D4EB0) // Warna ketika kondisi terpenuhi
-                    } else {
-                        Color(0xFFA6AFE6) // Warna ketika kondisi tidak terpenuhi
-                    },
-                    shape = RoundedCornerShape(size = 5.08002.dp)
-                )
-                .clickable {
-                    if (!mainViewModel.selectedPesanan.sudahBayar && mainViewModel.selectedPesanan.status != "canceled") {
-                        postCancelOrder(ctx, NavController, mainViewModel)
-                    }
-                },
-
-                ) {
-                Text(modifier = Modifier
-                    .padding(top = 10.dp)
-                    .fillMaxSize(),
-                    text = "Batal",
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        fontFamily = fontFamily,
-                        fontWeight = FontWeight(500),
-                        color = Color(0xFFFFFFFF),
-                        textAlign = TextAlign.Center
-                    )
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .padding(top = 50.dp, start = 10.dp)
+        if(!mainViewModel.selectedPesanan.sudahBayar && mainViewModel.selectedPesanan.status != "canceled"){
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp),
+                horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.Start),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Column(modifier = Modifier
+                    .padding(top = 50.dp, start = 30.dp)
                     .width(150.dp)
                     .height(50.dp)
                     .background(
@@ -349,25 +310,60 @@ fun Status(NavController: NavHostController, mainViewModel: MainViewModel) {
                         shape = RoundedCornerShape(size = 5.08002.dp)
                     )
                     .clickable {
-                        if (!mainViewModel.selectedPesanan.sudahBayar && mainViewModel.selectedPesanan.status != "canceled"){
-                            NavController.navigate("Booking")
+                        if (!mainViewModel.selectedPesanan.sudahBayar && mainViewModel.selectedPesanan.status != "canceled") {
+                            postCancelOrder(ctx, NavController, mainViewModel)
                         }
                     },
-            ) {
-                Text(modifier = Modifier
-                    .padding(top = 10.dp)
-                    .fillMaxSize(),
-                    text = "Bayar",
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        fontFamily = fontFamily,
-                        fontWeight = FontWeight(500),
-                        color = Color(0xFFFFFFFF),
-                        textAlign = TextAlign.Center
+
+                    ) {
+                    Text(modifier = Modifier
+                        .padding(top = 10.dp)
+                        .fillMaxSize(),
+                        text = "Batal",
+                        style = TextStyle(
+                            fontSize = 20.sp,
+                            fontFamily = fontFamily,
+                            fontWeight = FontWeight(500),
+                            color = Color(0xFFFFFFFF),
+                            textAlign = TextAlign.Center
+                        )
                     )
-                )
+                }
+                Column(
+                    modifier = Modifier
+                        .padding(top = 50.dp, start = 10.dp)
+                        .width(150.dp)
+                        .height(50.dp)
+                        .background(
+                            color = if (!mainViewModel.selectedPesanan.sudahBayar && mainViewModel.selectedPesanan.status != "canceled") {
+                                Color(0xFF3D4EB0) // Warna ketika kondisi terpenuhi
+                            } else {
+                                Color(0xFFA6AFE6) // Warna ketika kondisi tidak terpenuhi
+                            },
+                            shape = RoundedCornerShape(size = 5.08002.dp)
+                        )
+                        .clickable {
+                            if (!mainViewModel.selectedPesanan.sudahBayar && mainViewModel.selectedPesanan.status != "canceled"){
+                                NavController.navigate("Booking")
+                            }
+                        },
+                ) {
+                    Text(modifier = Modifier
+                        .padding(top = 10.dp)
+                        .fillMaxSize(),
+                        text = "Bayar",
+                        style = TextStyle(
+                            fontSize = 20.sp,
+                            fontFamily = fontFamily,
+                            fontWeight = FontWeight(500),
+                            color = Color(0xFFFFFFFF),
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                }
             }
         }
+
 
     }
 }
