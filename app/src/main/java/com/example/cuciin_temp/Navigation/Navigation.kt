@@ -49,7 +49,7 @@ fun navigation(mainViewModel : MainViewModel){
             Profile(NavController)
         }
         composable(route = "Status"){
-            Status(NavController)
+            Status(NavController, mainViewModel)
         }
 
 

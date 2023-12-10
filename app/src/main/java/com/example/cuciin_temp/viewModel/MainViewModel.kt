@@ -37,9 +37,11 @@ class MainViewModel : ViewModel() {
     var customerEmail: String by mutableStateOf("")
     var customerId: Int by mutableStateOf(0)
     lateinit var selectedMitra: DataX
+    lateinit var selectedPesanan: Pesanan
     lateinit var selectedLayanan: Layanan
     lateinit var selectedMesin: Mesin
     var listOrder: List<Pesanan> = emptyList()
+
 
 
 }

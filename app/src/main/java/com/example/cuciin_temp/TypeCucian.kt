@@ -188,77 +188,7 @@ fun TypeCucian(NavController: NavHostController, mainViewModel: MainViewModel) {
     }
 }
 
-//@Composable
-//fun MyChoice(
-//    type: String,
-//    price: String,
-//){
-//    var isBackgroundChanged by remember { mutableStateOf(false) }
-//    val backgroundColor = if (isBackgroundChanged) {
-//        Color(0xFF3D4EB0) // Change this to the color you want when selected
-//    } else {
-//        Color(0xFF47B7DD) // Default color
-//    }
-//    Spacer(modifier = Modifier.size(30.dp))
-//    Column(modifier = Modifier
-//        .width(365.dp)
-//        .height(54.dp)
-//        .padding(start = 30.dp)
-//        .background(color = backgroundColor, shape = RoundedCornerShape(size = 8.dp))
-//        .clickable { isBackgroundChanged = !isBackgroundChanged },
-//    ) {
-//        Row(modifier = Modifier
-//            .fillMaxWidth()
-//            .fillMaxWidth(),
-//            horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.Start),
-//            verticalAlignment = Alignment.CenterVertically,
-//        ) {
-//            Image( modifier = Modifier
-//                .padding(top = 10.dp, start = 20.dp)
-//                .width(20.dp)
-//                .height(14.49874.dp),
-//                painter = painterResource(id = R.drawable.setrika),
-//                contentDescription = "image description",
-//                contentScale = ContentScale.None,
-//            )
-//            Column(modifier = Modifier.padding(top = 5.dp)) {
-//                Text(
-//                    text = type,
-//                    style = TextStyle(
-//                        fontSize = 16.sp,
-//                        fontFamily = fontFamily,
-//                        fontWeight = FontWeight(500),
-//                        color = Color(0xFF000000),
-//
-//                        )
-//                )
-//                Text(
-//                    text = price,
-//                    style = TextStyle(
-//                        fontSize = 16.sp,
-//                        fontFamily = fontFamily,
-//                        fontWeight = FontWeight(500),
-//                        color = Color(0xFF000000),
-//
-//                        )
-//                )
-//            }
-//        }
-//    }
-//}
-//
-//val types = listOf("Cuci Biasa", "Cuci Kering", "Cuci Setrika")
-//val prices = listOf("Rp.20000", "Rp.25000", "Rp.30000")
-//
-//@Composable
-//fun Columns() {
-//    Column {
-//        for (i in types.indices) {
-//            MyChoice(types[i], prices[i])
-//            Spacer(modifier = Modifier.height(16.dp)) // Add spacing between columns
-//        }
-//    }
-//}
+
 
 @Composable
 fun MyChoice(

@@ -45,10 +45,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavHostController
 import com.example.cuciin_temp.model.GetOrderRequest
 import com.example.cuciin_temp.model.GetOrderResponse
+import com.example.cuciin_temp.model.Pesanan
 import com.example.cuciin_temp.model.ServicesResponses
 import com.example.cuciin_temp.network.RetrofitAPI
 import com.example.cuciin_temp.ui.theme.fontFamily
@@ -143,7 +145,9 @@ fun DashboardPage(NavController: NavHostController, mainViewModel: MainViewModel
 
                     Spacer(modifier = Modifier.height(10.dp))
                     if (mainViewModel.listOrder != null){
-                        LazyColumn(){
+                        LazyColumn(
+                            modifier = Modifier.height(200.dp)
+                        ){
                             items(mainViewModel.listOrder){ order ->
                                 ElevatedCard(
                                     elevation = CardDefaults.cardElevation(
@@ -154,14 +158,17 @@ fun DashboardPage(NavController: NavHostController, mainViewModel: MainViewModel
                                     colors = CardDefaults.cardColors(
                                         containerColor = Color.White,
                                     ),
-                                    onClick = {}
+                                    onClick = {
+                                        mainViewModel.selectedPesanan = order
+                                        NavController.navigate("Status")
+                                    },
+
 
                                 ){
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .padding(5.dp, 5.dp)
-                                            .clickable { NavController.navigate("Status") }
                                     ) {
                                         Spacer(modifier = Modifier.width(10.dp))
                                         Image(
@@ -199,6 +206,21 @@ fun DashboardPage(NavController: NavHostController, mainViewModel: MainViewModel
                             }
 
                         }
+                    }else{
+                        Column (
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ){
+                            Spacer(modifier = Modifier.height(5.dp))
+                            Text(
+                                text = "belum ada order yang terbuat",
+                                style = TextStyle(
+                                    fontSize = 17.sp,
+//                                            fontFamily = FontFamily(Font(R.font.fjalla one)),
+                                    fontWeight = FontWeight(400),
+                                    color = Color(0xFF000000),
+                                )
+                            )
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(10.dp))
@@ -231,7 +253,7 @@ fun DashboardPage(NavController: NavHostController, mainViewModel: MainViewModel
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { NavController.navigate("Layanan") }
+                        .clickable { NavController.navigate("Pesan") }
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.toko1),
@@ -458,6 +480,8 @@ fun DashboardPage(NavController: NavHostController, mainViewModel: MainViewModel
         }
     }
 }
+
+
 
 private fun postGetOrder(
     mainViewModel: MainViewModel,

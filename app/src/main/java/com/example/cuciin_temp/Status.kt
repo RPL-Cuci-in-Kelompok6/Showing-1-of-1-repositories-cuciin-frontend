@@ -39,10 +39,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.cuciin_temp.ui.theme.Cuciin_tempTheme
 import com.example.cuciin_temp.ui.theme.fontFamily
+import com.example.cuciin_temp.viewModel.MainViewModel
 
 
 @Composable
-fun Status(NavController: NavHostController) {
+fun Status(NavController: NavHostController, mainViewModel: MainViewModel) {
     Column(modifier = Modifier
         .fillMaxSize()
         .background(color = Color(0xFFEAFCFF))
@@ -164,7 +165,7 @@ fun Status(NavController: NavHostController) {
                         )
                     )
                     Text(modifier = Modifier.fillMaxWidth(),
-                        text = "0002142",
+                        text = mainViewModel.selectedPesanan.id.toString(),
                         style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = fontFamily,
@@ -178,7 +179,7 @@ fun Status(NavController: NavHostController) {
                     horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
                 ) {
                     Text(
-                        text = "Tanggal Pemesanan :",
+                        text = "Status :",
                         style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = fontFamily,
@@ -187,7 +188,7 @@ fun Status(NavController: NavHostController) {
                         )
                     )
                     Text(modifier = Modifier.fillMaxWidth(),
-                        text = "23-05-23, 12:45:00",
+                        text = mainViewModel.selectedPesanan.status,
                         style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = fontFamily,
@@ -201,7 +202,7 @@ fun Status(NavController: NavHostController) {
                     horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
                 ) {
                     Text(
-                        text = "Tipe Cucian :",
+                        text = "Email Pemesan :",
                         style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = fontFamily,
@@ -210,53 +211,7 @@ fun Status(NavController: NavHostController) {
                         )
                     )
                     Text(modifier = Modifier.fillMaxWidth(),
-                        text = "Kering",
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = fontFamily,
-                            fontWeight = FontWeight(400),
-                            color = Color(0xFF6E6F79),
-                            textAlign = TextAlign.End,
-                        )
-                    )
-                }
-                Row(modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-                ) {
-                    Text(
-                        text = "Jenis Pembayaran :",
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = fontFamily,
-                            fontWeight = FontWeight(400),
-                            color = Color(0xFF6E6F79),
-                        )
-                    )
-                    Text(modifier = Modifier.fillMaxWidth(),
-                        text = "Cash",
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = fontFamily,
-                            fontWeight = FontWeight(400),
-                            color = Color(0xFF6E6F79),
-                            textAlign = TextAlign.End,
-                        )
-                    )
-                }
-                Row(modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
-                ) {
-                    Text(
-                        text = "Nama Pemesan :",
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            fontFamily = fontFamily,
-                            fontWeight = FontWeight(400),
-                            color = Color(0xFF6E6F79),
-                        )
-                    )
-                    Text(modifier = Modifier.fillMaxWidth(),
-                        text = "JUJU",
+                        text = mainViewModel.customerEmail,
                         style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = fontFamily,
@@ -286,7 +241,34 @@ fun Status(NavController: NavHostController) {
                         )
                     )
                     Text(modifier = Modifier.fillMaxWidth(),
-                        text = "Rp25.000",
+                        text = "Rp " + mainViewModel.selectedPesanan.totalHarga.toString(),
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = fontFamily,
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF6E6F79),
+                            textAlign = TextAlign.End,
+                        )
+                    )
+                }
+                var statusPembayaran = ""
+                if (mainViewModel.selectedPesanan.sudahBayar){
+                    statusPembayaran = "Paid"
+                } else statusPembayaran = "Not-Paid"
+                Row(modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
+                ) {
+                    Text(
+                        text = "Status Pembayaran :",
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            fontFamily = fontFamily,
+                            fontWeight = FontWeight(400),
+                            color = Color(0xFF6E6F79),
+                        )
+                    )
+                    Text(modifier = Modifier.fillMaxWidth(),
+                        text = statusPembayaran,
                         style = TextStyle(
                             fontSize = 12.sp,
                             fontFamily = fontFamily,
@@ -333,13 +315,13 @@ fun Status(NavController: NavHostController) {
                 .width(150.dp)
                 .height(50.dp)
                 .background(color = Color(0xFF3D4EB0), shape = RoundedCornerShape(size = 5.08002.dp))
-                .clickable { NavController.navigate("Dashboard") },
+                .clickable { NavController.navigate("Booking") },
 
                 ) {
                 Text(modifier = Modifier
                     .padding(top = 10.dp)
                     .fillMaxSize(),
-                    text = "Mulai",
+                    text = "Bayar",
                     style = TextStyle(
                         fontSize = 20.sp,
                         fontFamily = fontFamily,
@@ -355,11 +337,3 @@ fun Status(NavController: NavHostController) {
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun StatusPreview() {
-    val navController = rememberNavController()
-    Cuciin_tempTheme {
-        Status(NavController = navController)
-    }
-}

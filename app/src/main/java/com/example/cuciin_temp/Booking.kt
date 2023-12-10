@@ -58,7 +58,7 @@ fun Booking(NavController: NavHostController) {
                 .padding(start = 20.dp)
                 .width(20.dp)
                 .height(14.49874.dp)
-                .clickable { NavController.navigate("Layanan") },
+                .clickable { NavController.navigate("Status") },
                 painter = painterResource(id = R.drawable.panah),
                 contentDescription = "image description",
                 contentScale = ContentScale.None
@@ -145,13 +145,13 @@ fun Booking(NavController: NavHostController) {
             .width(306.dp)
             .height(50.dp)
             .background(color = Color(0xFF3D4EB0), shape = RoundedCornerShape(size = 5.08002.dp))
-            .clickable { NavController.navigate("Status") },
+            .clickable { NavController.navigate("Dashboard") },
 
             ) {
             Text(modifier = Modifier
                 .padding(top = 10.dp)
                 .fillMaxSize(),
-                text = "Booking",
+                text = "Bayar",
                 style = TextStyle(
                     fontSize = 20.sp,
                     fontFamily = fontFamily,
